@@ -2,16 +2,16 @@ VERSION 5.00
 Begin VB.Form Form1 
    BorderStyle     =   1  '單線固定
    Caption         =   "TMDAI"
-   ClientHeight    =   8988
-   ClientLeft      =   36
-   ClientTop       =   372
-   ClientWidth     =   9036
+   ClientHeight    =   8985
+   ClientLeft      =   30
+   ClientTop       =   375
+   ClientWidth     =   9045
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   449.4
+   ScaleHeight     =   449.25
    ScaleMode       =   2  '點
-   ScaleWidth      =   451.8
+   ScaleWidth      =   452.25
    StartUpPosition =   3  '系統預設值
    Begin VB.CommandButton Command2 
       Caption         =   "Command2"
@@ -32,7 +32,7 @@ Begin VB.Form Form1
    Begin VB.Image Image1 
       Height          =   9000
       Left            =   0
-      Picture         =   "5.20.frx":0000
+      Picture         =   "main.frx":0000
       Stretch         =   -1  'True
       Top             =   0
       Width           =   9000
@@ -955,12 +955,12 @@ Private Sub drop(ByVal posx As Integer, ByVal posy As Integer)
 
 If bandw(posx, posy) = 0 Then
     If turn = True Then
-        FillColor = RGB(255, 255, 255)
+        FillColor = RGB(0, 0, 0)
         Circle (30 * posx - 10, 30 * posy - 10), 14
         bandw(posx, posy) = 1
         turn = Not (turn)
     Else
-        FillColor = RGB(0, 0, 0)
+        FillColor = RGB(255, 255, 255)
         Circle (30 * posx - 10, 30 * posy - 10), 14
         bandw(posx, posy) = 2
         turn = Not (turn)
