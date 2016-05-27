@@ -1,14 +1,11 @@
 VERSION 5.00
 Begin VB.Form Form1 
-   BorderStyle     =   1  '單線固定
    Caption         =   "TMDAI"
    ClientHeight    =   8985
-   ClientLeft      =   30
-   ClientTop       =   375
+   ClientLeft      =   45
+   ClientTop       =   390
    ClientWidth     =   9045
    LinkTopic       =   "Form1"
-   MaxButton       =   0   'False
-   MinButton       =   0   'False
    ScaleHeight     =   449.25
    ScaleMode       =   2  '點
    ScaleWidth      =   452.25
@@ -254,7 +251,7 @@ ElseIf choice(0, 2) <= choice(1, 2) And choice(0, 0) <> 0 Then
     GoTo ed
 End If
 
-If tick < 30 Then GoTo jp
+'If tick < 30 Then GoTo jp
 
 
 If turn = True Then
@@ -290,7 +287,7 @@ For x = 0 To 111
         End If
     Next y
 Next
-If df3(0, 0) <> 0 Then
+If df3(0, 0) <> 0 And tick > 30 Then
     Call drop(df3(0, 0), df3(0, 1))
     GoTo ed
 End If
@@ -330,11 +327,7 @@ For x = 0 To 111
         End If
     Next y
 Next
-If df32(0, 0) <> 0 Then
-    turn = Not (turn)
-    Call drop(df32(0, 0), df32(0, 1))
-    GoTo ed
-End If
+
 turn = Not (turn)
 
 jp:
@@ -831,6 +824,31 @@ For i = 1 To 15
             If ((Int(d3) = 2 And Int(d7) = 1) Or (Int(d3) = 1 And Int(d7) = 2)) And Int(d3) < d3 And Int(d7) < d7 Then a2 = a2 + 1
             If ((Int(d4) = 2 And Int(d8) = 1) Or (Int(d4) = 1 And Int(d8) = 2)) And Int(d4) < d4 And Int(d8) < d8 Then a2 = a2 + 1
             
+            If (Int(d1) = 3 And Int(d5) = 1) And Int(d1) < d1 Then
+                a2 = a2 - 1
+            End If
+            If (Int(d2) = 3 And Int(d6) = 1) And Int(d2) < d2 Then
+                a2 = a2 - 1
+            End If
+            If (Int(d3) = 3 And Int(d7) = 1) And Int(d3) < d3 Then
+                a2 = a2 - 1
+            End If
+            If (Int(d4) = 3 And Int(d8) = 1) And Int(d4) < d4 Then
+                a2 = a2 - 1
+            End If
+            If (Int(d5) = 3 And Int(d1) = 1) And Int(d5) < d5 Then
+                a2 = a2 - 1
+            End If
+            If (Int(d6) = 3 And Int(d2) = 1) And Int(d6) < d6 Then
+                a2 = a2 - 1
+            End If
+            If (Int(d7) = 3 And Int(d3) = 1) And Int(d7) < d7 Then
+                a2 = a2 - 1
+            End If
+            If (Int(d8) = 3 And Int(d4) = 1) And Int(d8) < d8 Then
+                a2 = a2 - 1
+            End If
+            
             If Int(d1) + Int(d5) >= 4 Then
                 a2 = a2 + 1
                 impot = True
@@ -983,7 +1001,7 @@ If turn = True Then
 Else
     bw = 1
 End If
-If bw = 2 Then
+If bw = 1 Then
     win = "黑棋"
 Else
     win = "白棋"
