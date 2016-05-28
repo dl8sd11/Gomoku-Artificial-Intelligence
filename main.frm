@@ -1,14 +1,14 @@
 VERSION 5.00
 Begin VB.Form Form1 
    Caption         =   "TMDAI"
-   ClientHeight    =   8985
-   ClientLeft      =   45
-   ClientTop       =   390
-   ClientWidth     =   9045
+   ClientHeight    =   8976
+   ClientLeft      =   48
+   ClientTop       =   396
+   ClientWidth     =   9048
    LinkTopic       =   "Form1"
-   ScaleHeight     =   449.25
+   ScaleHeight     =   448.8
    ScaleMode       =   2  '點
-   ScaleWidth      =   452.25
+   ScaleWidth      =   452.4
    StartUpPosition =   3  '系統預設值
    Begin VB.CommandButton Command2 
       Caption         =   "Command2"
@@ -50,7 +50,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'一空三的時候會有錯誤偵測雙活三
+ '一空三的時候會有錯誤偵測雙活三
 Dim black As Integer
 Dim white As Integer
 Dim turn As Boolean 'true黑 flase白
@@ -73,7 +73,7 @@ Private Sub Command1_Click()
 
 Call aiCopy
 ctrl = False
-
+tick = tick + 1
 If turn = True Then
     bw = 1
 Else
@@ -339,11 +339,20 @@ End If
 For x = 0 To 111
     If space(x, 0) <> -1 Then
         If bandw(space(x, 0), space(x, 1)) = 0 Then
-            Call drop(space(x, 0), space(x, 1))
-            GoTo ed
+            If aiScan2(space(x, 0), space(x, 1)) > 0 Then
+                Call drop(space(x, 0), space(x, 1))
+                GoTo ed
+            End If
         End If
     End If
 Next
+For x = 1 To 15
+    For y = 1 To 15
+        If aiScan2(x, y) > 0 Then
+            Call drop(x, y)
+        End If
+    Next y
+Next x
 ed:
 ctrl = True
 End Sub
@@ -529,7 +538,141 @@ If Int(d3) + Int(d7) = 3 And d3 > Int(d3) And d7 > Int(d7) Then aiScan4 = True
 If Int(d4) + Int(d8) = 3 And d4 > Int(d4) And d8 > Int(d8) Then aiScan4 = True
 
 End Function
+Function aiScan2(ByVal i As Integer, ByVal j As Integer) As Integer
+aiScan2 = 0
+If turn = True Then
+    bw = 1
+Else
+    bw = 2
+End If
 
+If aibandw(i, j) = 0 Then
+    d1 = 0
+    d2 = 0
+    d3 = 0
+    d4 = 0
+    d5 = 0
+    d6 = 0
+    d7 = 0
+    d8 = 0
+    
+    n = 1
+    While aibandw(i, j - n) = aibandw(i, j - 1) And aibandw(i, j - n) <> 0 And aibandw(i, j - n) = bw
+        d1 = d1 + 1
+        n = n + 1
+    Wend
+    If aibandw(i, j - n) = 0 Then
+        d1 = d1 + 0.25
+        n = n + 1
+        If aibandw(i, j - n) = 0 Then
+            d1 = d1 + 0.25
+        End If
+    End If
+    
+    
+    n = 1
+    While aibandw(i + n, j - n) = aibandw(i + 1, j - 1) And aibandw(i + n, j - n) <> 0 And aibandw(i + n, j - n) = bw
+        d2 = d2 + 1
+        n = n + 1
+    Wend
+    If aibandw(i + n, j - n) = 0 Then
+        d2 = d2 + 0.25
+        n = n + 1
+        If aibandw(i + n, j - n) = 0 Then
+            d2 = d2 + 0.25
+        End If
+    End If
+    
+    n = 1
+    While aibandw(i + n, j) = aibandw(i + 1, j) And aibandw(i + n, j) <> 0 And aibandw(i + n, j) = bw
+        d3 = d3 + 1
+        n = n + 1
+    Wend
+    If aibandw(i + n, j) = 0 Then
+        d3 = d3 + 0.25
+        n = n + 1
+        If aibandw(i + n, j) = 0 Then
+            d3 = d3 + 0.25
+        End If
+    End If
+    
+    n = 1
+    While aibandw(i + n, j + n) = aibandw(i + 1, j + 1) And aibandw(i + n, j + n) <> 0 And aibandw(i + n, j + n) = bw
+        d4 = d4 + 1
+        n = n + 1
+    Wend
+    If aibandw(i + n, j + n) = 0 Then
+        d4 = d4 + 0.25
+        n = n + 1
+        If aibandw(i + n, j + n) = 0 Then
+            d4 = d4 + 0.25
+        End If
+    End If
+    
+    n = 1
+    While aibandw(i, j + n) = aibandw(i, j + 1) And aibandw(i, j + n) <> 0 And aibandw(i, j + n) = bw
+        d5 = d5 + 1
+        n = n + 1
+    Wend
+    If aibandw(i, j + n) = 0 Then
+        d5 = d5 + 0.25
+        n = n + 1
+        If aibandw(i, j + n) = 0 Then
+            d5 = d5 + 0.25
+        End If
+    End If
+    
+    n = 1
+    While aibandw(i - n, j + n) = aibandw(i - 1, j + 1) And aibandw(i - n, j + n) <> 0 And aibandw(i - n, j + n) = bw
+        d6 = d6 + 1
+        n = n + 1
+    Wend
+    If aibandw(i - n, j + n) = 0 Then
+        d6 = d6 + 0.25
+        n = n + 1
+        If aibandw(i - n, j + n) = 0 Then
+            d6 = d6 + 0.25
+        End If
+    End If
+    
+    n = 1
+    While aibandw(i - n, j) = aibandw(i - 1, j) And aibandw(i - n, j) <> 0 And aibandw(i - n, j) = bw
+        d7 = d7 + 1
+        n = n + 1
+    Wend
+    If aibandw(i - n, j) = 0 Then
+        d7 = d7 + 0.25
+        n = n + 1
+        If aibandw(i - n, j) = 0 Then
+            d7 = d7 + 0.25
+        End If
+    End If
+    
+    n = 1
+    While aibandw(i - n, j - n) = aibandw(i - 1, j - 1) And aibandw(i - n, j - n) <> 0 And aibandw(i - n, j - n) = bw
+        d8 = d8 + 1
+        n = n + 1
+    Wend
+    If aibandw(i - n, j - n) = 0 Then
+        d8 = d8 + 0.25
+        n = n + 1
+        If aibandw(i - n, j - n) = 0 Then
+            d8 = d8 + 0.25
+        End If
+    End If
+    
+    If Int(d1) > 0 Then aiScan2 = aiScan2 + 1
+    If Int(d2) > 0 Then aiScan2 = aiScan2 + 1
+    If Int(d3) > 0 Then aiScan2 = aiScan2 + 1
+    If Int(d4) > 0 Then aiScan2 = aiScan2 + 1
+    If Int(d5) > 0 Then aiScan2 = aiScan2 + 1
+    If Int(d6) > 0 Then aiScan2 = aiScan2 + 1
+    If Int(d7) > 0 Then aiScan2 = aiScan2 + 1
+    If Int(d8) > 0 Then aiScan2 = aiScan2 + 1
+End If
+
+
+End Function
 
 Function aiScan3s() As Integer
 a2 = 0
