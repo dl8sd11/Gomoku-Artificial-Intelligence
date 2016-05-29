@@ -1,3 +1,11 @@
+#五子棋人工智慧
+陳冠辰用VB6.0開發的五子棋人工智慧
+#遊戲規則
+黑子先，輪流落子。
+直排橫排斜線連五子即勝利。
+本遊戲無考慮禁手。
+#歡迎大家跟我共同開發
+j312094@nehs.hc.edu.tw
 # Gomoku-Artificial-Intelligence
 A Chinese board game AI with VisualBasic 6.0
 #Game Rules

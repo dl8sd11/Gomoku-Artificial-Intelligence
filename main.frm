@@ -1,17 +1,14 @@
 VERSION 5.00
 Begin VB.Form Form1 
-   BorderStyle     =   1  '單線固定
    Caption         =   "TMDAI"
-   ClientHeight    =   8988
-   ClientLeft      =   36
-   ClientTop       =   372
-   ClientWidth     =   9036
+   ClientHeight    =   8976
+   ClientLeft      =   48
+   ClientTop       =   396
+   ClientWidth     =   9048
    LinkTopic       =   "Form1"
-   MaxButton       =   0   'False
-   MinButton       =   0   'False
-   ScaleHeight     =   449.4
+   ScaleHeight     =   448.8
    ScaleMode       =   2  '點
-   ScaleWidth      =   451.8
+   ScaleWidth      =   452.4
    StartUpPosition =   3  '系統預設值
    Begin VB.CommandButton Command2 
       Caption         =   "Command2"
@@ -32,7 +29,7 @@ Begin VB.Form Form1
    Begin VB.Image Image1 
       Height          =   9000
       Left            =   0
-      Picture         =   "5.20.frx":0000
+      Picture         =   "main.frx":0000
       Stretch         =   -1  'True
       Top             =   0
       Width           =   9000
@@ -53,7 +50,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'一空三的時候會有錯誤偵測雙活三
+ '一空三的時候會有錯誤偵測雙活三
 Dim black As Integer
 Dim white As Integer
 Dim turn As Boolean 'true黑 flase白
@@ -76,7 +73,7 @@ Private Sub Command1_Click()
 
 Call aiCopy
 ctrl = False
-
+tick = tick + 1
 If turn = True Then
     bw = 1
 Else
@@ -254,7 +251,7 @@ ElseIf choice(0, 2) <= choice(1, 2) And choice(0, 0) <> 0 Then
     GoTo ed
 End If
 
-If tick < 30 Then GoTo jp
+'If tick < 30 Then GoTo jp
 
 
 If turn = True Then
@@ -290,7 +287,7 @@ For x = 0 To 111
         End If
     Next y
 Next
-If df3(0, 0) <> 0 Then
+If df3(0, 0) <> 0 And tick > 30 Then
     Call drop(df3(0, 0), df3(0, 1))
     GoTo ed
 End If
@@ -330,11 +327,7 @@ For x = 0 To 111
         End If
     Next y
 Next
-If df32(0, 0) <> 0 Then
-    turn = Not (turn)
-    Call drop(df32(0, 0), df32(0, 1))
-    GoTo ed
-End If
+
 turn = Not (turn)
 
 jp:
@@ -346,11 +339,20 @@ End If
 For x = 0 To 111
     If space(x, 0) <> -1 Then
         If bandw(space(x, 0), space(x, 1)) = 0 Then
-            Call drop(space(x, 0), space(x, 1))
-            GoTo ed
+            If aiScan2(space(x, 0), space(x, 1)) > 0 Then
+                Call drop(space(x, 0), space(x, 1))
+                GoTo ed
+            End If
         End If
     End If
 Next
+For x = 1 To 15
+    For y = 1 To 15
+        If aiScan2(x, y) > 0 Then
+            Call drop(x, y)
+        End If
+    Next y
+Next x
 ed:
 ctrl = True
 End Sub
@@ -536,7 +538,141 @@ If Int(d3) + Int(d7) = 3 And d3 > Int(d3) And d7 > Int(d7) Then aiScan4 = True
 If Int(d4) + Int(d8) = 3 And d4 > Int(d4) And d8 > Int(d8) Then aiScan4 = True
 
 End Function
+Function aiScan2(ByVal i As Integer, ByVal j As Integer) As Integer
+aiScan2 = 0
+If turn = True Then
+    bw = 1
+Else
+    bw = 2
+End If
 
+If aibandw(i, j) = 0 Then
+    d1 = 0
+    d2 = 0
+    d3 = 0
+    d4 = 0
+    d5 = 0
+    d6 = 0
+    d7 = 0
+    d8 = 0
+    
+    n = 1
+    While aibandw(i, j - n) = aibandw(i, j - 1) And aibandw(i, j - n) <> 0 And aibandw(i, j - n) = bw
+        d1 = d1 + 1
+        n = n + 1
+    Wend
+    If aibandw(i, j - n) = 0 Then
+        d1 = d1 + 0.25
+        n = n + 1
+        If aibandw(i, j - n) = 0 Then
+            d1 = d1 + 0.25
+        End If
+    End If
+    
+    
+    n = 1
+    While aibandw(i + n, j - n) = aibandw(i + 1, j - 1) And aibandw(i + n, j - n) <> 0 And aibandw(i + n, j - n) = bw
+        d2 = d2 + 1
+        n = n + 1
+    Wend
+    If aibandw(i + n, j - n) = 0 Then
+        d2 = d2 + 0.25
+        n = n + 1
+        If aibandw(i + n, j - n) = 0 Then
+            d2 = d2 + 0.25
+        End If
+    End If
+    
+    n = 1
+    While aibandw(i + n, j) = aibandw(i + 1, j) And aibandw(i + n, j) <> 0 And aibandw(i + n, j) = bw
+        d3 = d3 + 1
+        n = n + 1
+    Wend
+    If aibandw(i + n, j) = 0 Then
+        d3 = d3 + 0.25
+        n = n + 1
+        If aibandw(i + n, j) = 0 Then
+            d3 = d3 + 0.25
+        End If
+    End If
+    
+    n = 1
+    While aibandw(i + n, j + n) = aibandw(i + 1, j + 1) And aibandw(i + n, j + n) <> 0 And aibandw(i + n, j + n) = bw
+        d4 = d4 + 1
+        n = n + 1
+    Wend
+    If aibandw(i + n, j + n) = 0 Then
+        d4 = d4 + 0.25
+        n = n + 1
+        If aibandw(i + n, j + n) = 0 Then
+            d4 = d4 + 0.25
+        End If
+    End If
+    
+    n = 1
+    While aibandw(i, j + n) = aibandw(i, j + 1) And aibandw(i, j + n) <> 0 And aibandw(i, j + n) = bw
+        d5 = d5 + 1
+        n = n + 1
+    Wend
+    If aibandw(i, j + n) = 0 Then
+        d5 = d5 + 0.25
+        n = n + 1
+        If aibandw(i, j + n) = 0 Then
+            d5 = d5 + 0.25
+        End If
+    End If
+    
+    n = 1
+    While aibandw(i - n, j + n) = aibandw(i - 1, j + 1) And aibandw(i - n, j + n) <> 0 And aibandw(i - n, j + n) = bw
+        d6 = d6 + 1
+        n = n + 1
+    Wend
+    If aibandw(i - n, j + n) = 0 Then
+        d6 = d6 + 0.25
+        n = n + 1
+        If aibandw(i - n, j + n) = 0 Then
+            d6 = d6 + 0.25
+        End If
+    End If
+    
+    n = 1
+    While aibandw(i - n, j) = aibandw(i - 1, j) And aibandw(i - n, j) <> 0 And aibandw(i - n, j) = bw
+        d7 = d7 + 1
+        n = n + 1
+    Wend
+    If aibandw(i - n, j) = 0 Then
+        d7 = d7 + 0.25
+        n = n + 1
+        If aibandw(i - n, j) = 0 Then
+            d7 = d7 + 0.25
+        End If
+    End If
+    
+    n = 1
+    While aibandw(i - n, j - n) = aibandw(i - 1, j - 1) And aibandw(i - n, j - n) <> 0 And aibandw(i - n, j - n) = bw
+        d8 = d8 + 1
+        n = n + 1
+    Wend
+    If aibandw(i - n, j - n) = 0 Then
+        d8 = d8 + 0.25
+        n = n + 1
+        If aibandw(i - n, j - n) = 0 Then
+            d8 = d8 + 0.25
+        End If
+    End If
+    
+    If Int(d1) > 0 Then aiScan2 = aiScan2 + 1
+    If Int(d2) > 0 Then aiScan2 = aiScan2 + 1
+    If Int(d3) > 0 Then aiScan2 = aiScan2 + 1
+    If Int(d4) > 0 Then aiScan2 = aiScan2 + 1
+    If Int(d5) > 0 Then aiScan2 = aiScan2 + 1
+    If Int(d6) > 0 Then aiScan2 = aiScan2 + 1
+    If Int(d7) > 0 Then aiScan2 = aiScan2 + 1
+    If Int(d8) > 0 Then aiScan2 = aiScan2 + 1
+End If
+
+
+End Function
 
 Function aiScan3s() As Integer
 a2 = 0
@@ -831,6 +967,31 @@ For i = 1 To 15
             If ((Int(d3) = 2 And Int(d7) = 1) Or (Int(d3) = 1 And Int(d7) = 2)) And Int(d3) < d3 And Int(d7) < d7 Then a2 = a2 + 1
             If ((Int(d4) = 2 And Int(d8) = 1) Or (Int(d4) = 1 And Int(d8) = 2)) And Int(d4) < d4 And Int(d8) < d8 Then a2 = a2 + 1
             
+            If (Int(d1) = 3 And Int(d5) = 1) And Int(d1) < d1 Then
+                a2 = a2 - 1
+            End If
+            If (Int(d2) = 3 And Int(d6) = 1) And Int(d2) < d2 Then
+                a2 = a2 - 1
+            End If
+            If (Int(d3) = 3 And Int(d7) = 1) And Int(d3) < d3 Then
+                a2 = a2 - 1
+            End If
+            If (Int(d4) = 3 And Int(d8) = 1) And Int(d4) < d4 Then
+                a2 = a2 - 1
+            End If
+            If (Int(d5) = 3 And Int(d1) = 1) And Int(d5) < d5 Then
+                a2 = a2 - 1
+            End If
+            If (Int(d6) = 3 And Int(d2) = 1) And Int(d6) < d6 Then
+                a2 = a2 - 1
+            End If
+            If (Int(d7) = 3 And Int(d3) = 1) And Int(d7) < d7 Then
+                a2 = a2 - 1
+            End If
+            If (Int(d8) = 3 And Int(d4) = 1) And Int(d8) < d8 Then
+                a2 = a2 - 1
+            End If
+            
             If Int(d1) + Int(d5) >= 4 Then
                 a2 = a2 + 1
                 impot = True
@@ -955,12 +1116,12 @@ Private Sub drop(ByVal posx As Integer, ByVal posy As Integer)
 
 If bandw(posx, posy) = 0 Then
     If turn = True Then
-        FillColor = RGB(255, 255, 255)
+        FillColor = RGB(0, 0, 0)
         Circle (30 * posx - 10, 30 * posy - 10), 14
         bandw(posx, posy) = 1
         turn = Not (turn)
     Else
-        FillColor = RGB(0, 0, 0)
+        FillColor = RGB(255, 255, 255)
         Circle (30 * posx - 10, 30 * posy - 10), 14
         bandw(posx, posy) = 2
         turn = Not (turn)
@@ -983,7 +1144,7 @@ If turn = True Then
 Else
     bw = 1
 End If
-If bw = 2 Then
+If bw = 1 Then
     win = "黑棋"
 Else
     win = "白棋"
